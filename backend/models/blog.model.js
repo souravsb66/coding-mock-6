@@ -17,10 +17,12 @@ const blogSchema = mongoose.Schema({
         type: String
     },
     date: {
-        type: String
+        type: String,
+        default: Date.now()
     },
     likes: {
-        type: Number
+        type: Number,
+        default: 0
     },
     comments: {
         type: [{

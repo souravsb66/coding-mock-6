@@ -4,11 +4,10 @@ const auth = require("../middlewares/auth.middleware");
 
 const blogRouter = express.Router();
 
-blogRouter.get("/", async (req,res) => {
-    const {userId} = req.body;
+blogRouter.get("/", auth, async (req,res) => {
 
     try {
-        const blogs = await BlogModel.find({userId});
+        const blogs = await BlogModel.find();
         res.status(200).send(blogs);
     }
     catch(err) {
