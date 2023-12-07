@@ -30,4 +30,62 @@ blogRouter.post("/", auth, async (req,res) => {
     }
 })
 
+blogRouter.patch("/:blogId", auth, async (req,res) => {
+
+    const { blogId } = req.params;
+    const {userId} = req.body;
+
+    try {
+        const blog = await BlogModel.findOne({_id: blogId});
+
+        if(blog) {
+            if(userId === blog.userId) {
+                await BlogModel.findByIdAndUpdate({_id: blogId}, req.body);
+                let updatedBlog = await BlogModel.findOne({_id: blogId});
+
+                res.status(200).send({message: "Blog updated successfully", blog: updatedBlog});
+            }
+            else {
+                res.status(200).send({error: "Not authorized!"});
+            }
+        }
+        else {
+            res.status(400).send({error: "Blog not found"});
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.status(400).send({error: err.message});
+    }
+})
+
+blogRouter.delete("/:blogId", auth, async (req,res) => {
+
+    const { blogId } = req.params;
+    const {userId} = req.body;
+
+    try {
+        const blog = await BlogModel.findOne({_id: blogId});
+
+        if(blog) {
+            if(userId === blog.userId) {
+                await BlogModel.findByIdAndDelete({_id: blogId});
+
+                res.status(200).send({message: "Blog deleted successfully"});
+            }
+            else {
+                res.status(200).send({error: "Not authorized!"});
+            }
+        }
+        else {
+            res.status(400).send({error: "Blog not found"});
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.status(400).send({error: err.message});
+    }
+})
+
+
 module.exports = blogRouter;
