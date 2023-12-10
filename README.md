@@ -1,1 +1,0 @@
-# coding-mock-6

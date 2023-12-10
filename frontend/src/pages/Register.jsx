@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
-
+import { Navigate, useNavigate } from "react-router-dom";
 import {
   Input,
   Container,
@@ -10,16 +9,20 @@ import {
   FormLabel,
   Button,
 } from "@chakra-ui/react";
-import { loginUser } from "../redux/auth/action";
+import { register } from "../redux/auth/action";
 
-const Home = () => {
+const Register = () => {
   const initialData = {
+    username: "",
+    avatar:
+      "https://www.svgrepo.com/show/384674/account-avatar-profile-user-11.svg",
     email: "",
-    password: ""
-};
+    password: "",
+  };
   const [userData, setUserData] = useState(initialData);
   const { token } = useSelector((store) => store.authReducer);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setUserData((prev) => {
@@ -31,18 +34,37 @@ const Home = () => {
   };
 
   const handleSubmit = (e) => {
-    // console.log(userData);
-    dispatch(loginUser(userData));
+    dispatch(register(userData));
+    setUserData(initialData);
+    navigate("/login");
   };
 
-  if (token) {
-    return <Navigate to={"/"} />;
+  if(token) {
+    return <Navigate to={"/login"} />;
   }
   return (
     <Container>
-      <Heading size="md">Login</Heading>
+      <Heading size="md">Register User</Heading>
 
       <FormControl isRequired>
+        <FormLabel>Username</FormLabel>
+        <Input
+          id="username"
+          placeholder="Username"
+          type="text"
+          name="username"
+          value={userData.username}
+          onChange={handleChange}
+        />
+        <FormLabel>Avatar</FormLabel>
+        <Input
+          id="avatar"
+          placeholder="Avatar"
+          type="text"
+          name="avatar"
+          value={userData.avatar}
+          onChange={handleChange}
+        />
         <FormLabel>Email</FormLabel>
         <Input
           id="email"
@@ -63,11 +85,11 @@ const Home = () => {
         />
 
         <Button colorScheme="blue" onClick={handleSubmit}>
-          Login
+          Register
         </Button>
       </FormControl>
     </Container>
   );
 };
 
-export default Home;
+export default Register;
